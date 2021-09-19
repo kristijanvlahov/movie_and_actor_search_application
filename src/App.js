@@ -7,6 +7,7 @@ function App() {
   const [data, setData] = useState([]);
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [array, setArray] = useState([]);
 
 
   async function fetchData() {
@@ -26,15 +27,17 @@ function App() {
     ?link wdt:P31 wd:Q11424.
     ?link wdt:P1476 ?title.
   
-  } LIMIT 10`
+  } LIMIT 50`
 
     const stream = await client.query.select(query);
 
     stream.on('data', row => {
       Object.entries(row).forEach(([key, value]) => {
         //console.log(`${key}: ${value.value} (${value.termType})`)
+
       })
-      setData(row.title.value);
+      setData(row);
+      array.push(row.title.value);
     })
   }
 
@@ -43,14 +46,14 @@ function App() {
   }, [])
 
   function handleSearch() {
-    console.log(data);
+    //console.log(data);
   }
 
   const onChangeHandler = (text) => {
 
     let matches = []
     let data2 = [];
-    data2.push(data);
+    data2 = [...array];
     if (text.length > 0) {
       matches = data2.filter(d => {
         const regex = new RegExp(`${text}`, "gi");
@@ -63,7 +66,7 @@ function App() {
 
   const onSuggestHandler = (text) => {
     setText(text);
-    setSuggestions([])
+    setSuggestions([]);
   }
 
   return (
