@@ -71,10 +71,11 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Movie Search App</h1>
       <div className="autocomplete">
         <input type="text" className="input" placeholder="Enter movie name"
           onChange={e => onChangeHandler(e.target.value)}
-          value={text} onBlur={() => setSuggestions([])}></input>
+          value={text}></input>
 
         <button type="submit" onClick={handleSearch()}>Search</button>
       </div>
