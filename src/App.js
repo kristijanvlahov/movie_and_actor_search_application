@@ -23,10 +23,15 @@ function App() {
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX p: <http://www.wikidata.org/prop/>
     PREFIX v: <http://www.wikidata.org/prop/statement/>
-    SELECT DISTINCT ?link ?title WHERE {
-    ?link wdt:P31 wd:Q11424.
-    ?link wdt:P1476 ?title.
-  
+    SELECT DISTINCT ?link ?title ?genre ?contryOfOrigin ?director ?duration ?awardReceived ?image WHERE {
+      ?link wdt:P31 wd:Q11424.
+      ?link wdt:P1476 ?title.
+      ?link wdt:P101 ?genre.
+      ?link wdt:P495 ?contryOfOrigin.
+      ?link wdt:P57 ?director.
+      ?link wdt:P0247 ?duration.
+      ?link wdt:P166 ?awardReceived.
+      ?link wdt:P6802 ?image.
   } LIMIT 50`
 
     const stream = await client.query.select(query);
