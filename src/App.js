@@ -8,7 +8,7 @@ function App() {
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [array, setArray] = useState([]);
-
+  let movie = [];
 
   async function fetchData() {
 
@@ -34,19 +34,19 @@ function App() {
     stream.on('data', row => {
       Object.entries(row).forEach(([key, value]) => {
         //console.log(`${key}: ${value.value} (${value.termType})`)
-
       })
-      setData(row);
+      setData(x => [...x,row]);
       array.push(row.title.value);
     })
   }
-
   useEffect(() => {
     fetchData();
   }, [])
 
-  function handleSearch() {
-    //console.log(data);
+  const handleSearch = (text) => {
+    console.log(data);
+    movie = data.find(x => x.title.value === text);
+    console.log(movie);
   }
 
   const onChangeHandler = (text) => {
@@ -77,7 +77,7 @@ function App() {
           onChange={e => onChangeHandler(e.target.value)}
           value={text}></input>
 
-        <button type="submit" onClick={handleSearch()}>Search</button>
+        <button type="submit" onClick={handleSearch(text)}>Search</button>
       </div>
 
       {suggestions && suggestions.map((suggestion, i) =>
