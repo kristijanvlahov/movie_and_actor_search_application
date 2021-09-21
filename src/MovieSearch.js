@@ -11,6 +11,7 @@ const MovieSearch = () => {
   const [array, setArray] = useState([]);
   let movie = [];
   let movies = [];
+  let o = {value:"Title,Duration"}
 
   async function fetchData() {
 
@@ -86,6 +87,7 @@ const MovieSearch = () => {
   return (
     <div className="App">
         <div className="container">
+        <img src="https://st2.depositphotos.com/3687485/9010/v/600/depositphotos_90102796-stock-illustration-cinema-film-clapper-board-vector.jpg" width="100px" height="100px"></img>
         <h1>Movie Search</h1>
         <Link to={'/actorSearch'}>Actor Search</Link>
         </div>
@@ -97,15 +99,20 @@ const MovieSearch = () => {
 
         <button type="submit" onClick={handleSearch(text)}>Search</button>
       </div>
-
+      
       {suggestions && suggestions.filter((val,i)=>i<5).map((suggestion, i) =>
         <div className="suggestion" onClick={() => onSuggestHandler(suggestion)}>{suggestion}
         </div>
       )}
+
+      {
+        ()=>{
+          if(movies){
+            return <li>{movies[3].value}</li>
+          }
+        }
+      }
       
-        {movies && movies.map((m, i) =>
-          <li key={i}>{m.value}</li>
-        )}
             
     </div>
   );

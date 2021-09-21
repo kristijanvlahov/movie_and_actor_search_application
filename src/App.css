@@ -3,9 +3,11 @@
 }
 .autocomplete {
   width: 300px;
-  position: relative;
-  display: inline-block;
-  padding-top: 30px;
+  display: inline-flex;
+  padding-top: 20px;
+}
+h1 {
+  margin-bottom: 20px;
 }
 input {
   border: 1px solid transparent;
@@ -15,11 +17,18 @@ input {
 }
 input[type=text] {
   background-color: #f1f1f1;
-  width: 100%;
+  width: 80%;
 }
 button[type=submit] {
-  background-color: DodgerBlue;
-  color: #fff;
+  float: right;
+  width: 30%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
 }
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
@@ -28,10 +37,13 @@ button[type=submit] {
 }
 .suggestion{
   cursor:pointer;
+  width: 300px;
+  margin: auto;
+  text-align: center;
   border:1px;
-  border-right: 1px solid black;
-  border-left: 1px solid black;
-  border-bottom: 1px solid black;
+  border-right: 1px solid grey;
+  border-left: 1px solid grey;
+  border-bottom: 1px solid grey;
   }
   .suggestion:hover{
   background-color: #f1f1f1;

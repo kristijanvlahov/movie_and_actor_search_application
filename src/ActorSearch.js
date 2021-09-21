@@ -87,6 +87,7 @@ LIMIT 100`
   return (
     <div className="App">
       <div className="container">
+        <img src="https://www.nicepng.com/png/detail/153-1531345_ocean-waves-actor-logo.png" width="100px" height="100px"></img>
         <h1>Actor Search</h1>
         <Link to={'/'}>Movie Search</Link>
         </div>
