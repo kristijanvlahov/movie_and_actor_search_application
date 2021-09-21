@@ -5,6 +5,7 @@
   width: 300px;
   position: relative;
   display: inline-block;
+  padding-top: 30px;
 }
 input {
   border: 1px solid transparent;
