@@ -9,6 +9,7 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [array, setArray] = useState([]);
   let movie = [];
+  let movies = [];
 
   async function fetchData() {
 
@@ -54,6 +55,11 @@ function App() {
     console.log(data);
     movie = data.find(x => x.title.value === text);
     console.log(movie);
+    if(typeof(movie)=='object'){
+      movies = Object.values(movie);
+      console.log(movies);
+    }
+    
   }
 
   const onChangeHandler = (text) => {
@@ -90,6 +96,10 @@ function App() {
       {suggestions && suggestions.map((suggestion, i) =>
         <div className="suggestion" onClick={() => onSuggestHandler(suggestion)}>{suggestion}
         </div>
+      )}
+      
+      {movies.map((m, i) =>
+        <li key={i}>{m.value}</li>
       )}
     </div>
   );
