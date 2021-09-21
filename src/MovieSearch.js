@@ -17,27 +17,27 @@ const MovieSearch = () => {
 
     const SparqlClient = require('sparql-http-client')
 
-    const client = new SparqlClient({ endpointUrl: 'https://query.wikidata.org/sparql' })
+    const client = new SparqlClient({ endpointUrl: 'https://dbpedia.org/sparql' })
 
     const query = `
-    PREFIX wikibase: <http://wikiba.se/ontology#>
-    PREFIX wd: <http://www.wikidata.org/entity/> 
-    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX p: <http://www.wikidata.org/prop/>
-    PREFIX v: <http://www.wikidata.org/prop/statement/>
-    SELECT DISTINCT (SAMPLE(?link) AS ?link) ?title (SAMPLE(?genre) AS ?genre) (SAMPLE(?contryOfOrigin) AS ?contryOfOrigin) (SAMPLE(?image) AS ?image)  (SAMPLE(?director) AS ?director) (SAMPLE(?duration) AS ?duration) (SAMPLE(?awardReceived) AS ?awardReceived)  WHERE {
-      ?link wdt:P31 wd:Q11424.
-      ?link wdt:P1476 ?title.
-      ?link wdt:P136 ?genre.
-      ?link wdt:P495 ?contryOfOrigin.
-      ?link wdt:P18 ?image.
-      ?link wdt:P57 ?director.
-      ?link wdt:P2047 ?duration.
-      ?link wdt:P166 ?awardReceived.
-      
-  } GROUP BY ?title
-    LIMIT 50`
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dbc: <http://dbpedia.org/resource/Category:>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbp: <http://dbpedia.org/property/>
+SELECT DISTINCT ?movieLink ?genreLinkLabel ?title ?directorLabel ?releaseDate ?comment {
+  ?movieLink a dbo:Film; 
+                    dct:subject ?genreLink; 
+                              foaf:name ?title; 
+                    dbo:director ?director; 
+                  rdfs:comment ?comment.
+  ?genreLink rdfs:label ?genreLinkLabel.
+  ?director rdfs:label ?directorLabel.
+    
+  OPTIONAL{ ?movieLink <http://dbpedia.org/ontology/releaseDate> ?releaseDate }.
+}
+LIMIT 50`
 
     const stream = await client.query.select(query);
 
@@ -105,13 +105,17 @@ const MovieSearch = () => {
         </div>
       )}
 
-      {
+      {movies.map((m, i) =>
+        <li key={i}>{m.value}</li>
+      )}
+
+      {/*{
         ()=>{
           if(movies){
             return <li>{movies[3].value}</li>
           }
         }
-      }
+      }*/}
       
             
     </div>
