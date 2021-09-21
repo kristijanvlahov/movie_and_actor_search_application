@@ -91,14 +91,14 @@ LIMIT 100`
         <Link to={'/'}>Movie Search</Link>
         </div>
       <div className="autocomplete">
-        <input type="text" className="input" placeholder="Enter movie name"
+        <input type="text" className="input" placeholder="Enter actor name"
           onChange={e => onChangeHandler(e.target.value)}
           value={text}></input>
 
         <button type="submit" onClick={handleSearch(text)}>Search</button>
       </div>
 
-      {suggestions && suggestions.map((suggestion, i) =>
+      {suggestions && suggestions.filter((val,i)=>i<5).map((suggestion, i) =>
         <div className="suggestion" onClick={() => onSuggestHandler(suggestion)}>{suggestion}
         </div>
       )}

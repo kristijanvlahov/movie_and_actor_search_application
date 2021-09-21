@@ -98,14 +98,14 @@ const MovieSearch = () => {
         <button type="submit" onClick={handleSearch(text)}>Search</button>
       </div>
 
-      {suggestions && suggestions.map((suggestion, i) =>
+      {suggestions && suggestions.filter((val,i)=>i<5).map((suggestion, i) =>
         <div className="suggestion" onClick={() => onSuggestHandler(suggestion)}>{suggestion}
         </div>
       )}
       
-      {movies.map((m, i) =>
-        <li key={i}>{m.value}</li>
-      )}
+        {movies && movies.map((m, i) =>
+          <li key={i}>{m.value}</li>
+        )}
             
     </div>
   );
