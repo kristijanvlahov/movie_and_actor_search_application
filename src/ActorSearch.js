@@ -16,26 +16,28 @@ const ActorSearch = () => {
 
     const SparqlClient = require('sparql-http-client')
 
-    const client = new SparqlClient({ endpointUrl: 'https://query.wikidata.org/sparql' })
+    const client = new SparqlClient({ endpointUrl: 'https://dbpedia.org/sparql' })
 
     const query = `
-    PREFIX wikibase: <http://wikiba.se/ontology#>
-    PREFIX wd: <http://www.wikidata.org/entity/> 
-    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX dbo: <http://dbpedia.org/ontology/>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX dbc: <http://dbpedia.org/resource/Category:>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX p: <http://www.wikidata.org/prop/>
-    PREFIX v: <http://www.wikidata.org/prop/statement/>
-    SELECT DISTINCT ?image ?actorLabel ?dob ?pobLabel ?countryLabel
-WHERE {
-  ?film wdt:P31 wd:Q11424;
-        wdt:P161 ?actor.
-  ?actor wdt:P18 ?image; 
-         wdt:P569 ?dob;
-         wdt:P19 ?pob;
-         wdt:P27 ?country.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
+    PREFIX dbp: <http://dbpedia.org/property/>
+    SELECT DISTINCT ?actorLabel ?dob ?birthPlaceLabel ?image ?abstract WHERE{
+         ?actorLink a dbo:Actor;
+                          dbp:name ?actorLabel;
+                          dbo:birthDate ?dob;
+                          dbo:birthPlace ?birthPlace;
+                          dbo:thumbnail ?image;
+                          dbo:abstract ?abstract.
+
+        ?birthPlace rdfs:label ?birthPlaceLabel.
+        FILTER(LANG(?birthPlaceLabel)='en').
+
 }
-LIMIT 100`
+    LIMIT 100`
 
     const stream = await client.query.select(query);
 

@@ -21,23 +21,29 @@ const MovieSearch = () => {
 
     const query = `
     PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX dbc: <http://dbpedia.org/resource/Category:>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dbp: <http://dbpedia.org/property/>
-SELECT DISTINCT ?movieLink ?genreLinkLabel ?title ?directorLabel ?releaseDate ?comment {
-  ?movieLink a dbo:Film; 
-                    dct:subject ?genreLink; 
-                              foaf:name ?title; 
-                    dbo:director ?director; 
-                  rdfs:comment ?comment.
-  ?genreLink rdfs:label ?genreLinkLabel.
-  ?director rdfs:label ?directorLabel.
-    
-  OPTIONAL{ ?movieLink <http://dbpedia.org/ontology/releaseDate> ?releaseDate }.
-}
-LIMIT 50`
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX dbc: <http://dbpedia.org/resource/Category:>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX dbp: <http://dbpedia.org/property/>
+    SELECT DISTINCT ?title (SAMPLE(?genreLinkLabel) AS ?genreLinkLabel) (SAMPLE(?comment) AS ?comment)  (SAMPLE(?directorLabel) AS ?directorLabel) (SAMPLE(?country) AS ?country)  {
+      ?movieLink a dbo:Film; 
+                        dct:subject ?genreLink; 
+                                  foaf:name ?title; 
+                        dbo:director ?director; 
+                      dbp:country ?country;
+                      rdfs:comment ?comment.
+                      
+
+      ?genreLink rdfs:label ?genreLinkLabel.
+      ?director rdfs:label ?directorLabel.
+    FILTER(LANG(?directorLabel)='en').
+    FILTER(regex(?country , "United States")).
+       
+    }
+    GROUP BY ?title
+    LIMIT 100
+   `
 
     const stream = await client.query.select(query);
 
