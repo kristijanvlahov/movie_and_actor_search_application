@@ -19,7 +19,8 @@ const MovieSearch = () => {
     const SparqlClient = require('sparql-http-client')
 
     const client = new SparqlClient({ endpointUrl: 'https://dbpedia.org/sparql' })
-
+    
+    //SPARQL query for fetching the movie data
     const query = `
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dct: <http://purl.org/dc/terms/>
@@ -46,9 +47,9 @@ const MovieSearch = () => {
       Object.entries(row).forEach(([key, value]) => {
         //console.log(`${key}: ${value.value} (${value.termType})`)
       })
+      //setting the recieved data
       setData(x => [...x, row]);
       array.push(row.title.value);
-
     })
   }
   useEffect(() => {
@@ -56,17 +57,15 @@ const MovieSearch = () => {
   }, [])
 
   const handleSearch = (text) => {
-
     movie = data.find(x => x.title.value === text);
-
     if (typeof (movie) == 'object') {
       movies = [...movies, movie];
       console.log(movies);
     }
   }
 
+  //comparing the text on change of the input field
   const onChangeHandler = (text) => {
-
     let matches = []
     let data2 = [];
     data2 = [...array];
@@ -85,8 +84,8 @@ const MovieSearch = () => {
     setSuggestions([]);
   }
 
+  //filtering the movies by country
   const filterHandler = () => {
-
     var e = document.getElementById("filter");
     var result = e.options[e.selectedIndex].value;
     countries_filtered = [];

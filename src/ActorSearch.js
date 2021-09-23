@@ -2,22 +2,23 @@ import './App.css';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
- 
+
 const ActorSearch = () => {
- 
+
   const [data, setData] = useState([]);
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [array, setArray] = useState([]);
   let actor = [];
   let actors = [];
- 
+
   async function fetchData() {
- 
+
     const SparqlClient = require('sparql-http-client')
- 
+
     const client = new SparqlClient({ endpointUrl: 'https://query.wikidata.org/sparql' })
- 
+    
+    //SPARQL query for fetching the actor data
     const query = `
     PREFIX wikibase: <http://wikiba.se/ontology#>
     PREFIX wd: <http://www.wikidata.org/entity/> 
@@ -26,23 +27,24 @@ const ActorSearch = () => {
     PREFIX p: <http://www.wikidata.org/prop/>
     PREFIX v: <http://www.wikidata.org/prop/statement/>
     SELECT DISTINCT ?image ?actorLabel ?dob ?pobLabel ?countryLabel
-WHERE {
-  ?film wdt:P31 wd:Q11424;
-        wdt:P161 ?actor.
-  ?actor wdt:P18 ?image; 
-         wdt:P569 ?dob;
-         wdt:P19 ?pob;
-         wdt:P27 ?country.
+    WHERE {
+            ?film wdt:P31 wd:Q11424;
+            wdt:P161 ?actor.
+            ?actor wdt:P18 ?image; 
+            wdt:P569 ?dob;
+            wdt:P19 ?pob;
+            wdt:P27 ?country.
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en" }
-}
-LIMIT 100`
- 
+          }
+  LIMIT 100`
+
     const stream = await client.query.select(query);
- 
+
     stream.on('data', row => {
       Object.entries(row).forEach(([key, value]) => {
         //console.log(`${key}: ${value.value} (${value.termType})`)
       })
+      //setting the recieved data
       setData(x => [...x, row]);
       console.log(data);
       array.push(row.actorLabel.value);
@@ -52,7 +54,7 @@ LIMIT 100`
   useEffect(() => {
     fetchData();
   }, [])
- 
+
   const handleSearch = (text) => {
     console.log(data);
     actor = data.find(x => x.actorLabel.value === text);
@@ -62,9 +64,9 @@ LIMIT 100`
       console.log(actors);
     }
   }
- 
+
+  //comparing the text on change of the input field
   const onChangeHandler = (text) => {
- 
     let matches = []
     let data2 = [];
     data2 = [...array];
@@ -77,21 +79,20 @@ LIMIT 100`
     setText(text);
     setSuggestions(matches);
   }
- 
+
   const onSuggestHandler = (text) => {
     setText(text);
     setSuggestions([]);
   }
- 
+
   return (
     <div className="App">
-      
       <div className="container">
         <img src="https://www.nicepng.com/png/detail/153-1531345_ocean-waves-actor-logo.png" width="100px" height="100px"></img>
         <h1>Actor Search</h1>
         <Link to={'/'}>Movie Search</Link>
       </div>
-      
+
       <div className="autocomplete">
         <input type="text" className="input" placeholder="Enter actor name"
           onChange={e => onChangeHandler(e.target.value)}
@@ -99,12 +100,12 @@ LIMIT 100`
         </input>
         <button type="submit" onClick={handleSearch(text)}>Search</button>
       </div>
- 
+
       {suggestions && suggestions.filter((val, i) => i < 5).map((suggestion, i) =>
         <div className="suggestion" onClick={() => onSuggestHandler(suggestion)}>{suggestion}
         </div>
       )}
- 
+
       {Object.keys(actors).map((item, i) => (
         <div key={i}>
           <h3>{actors[item].actorLabel.value}</h3>
@@ -114,9 +115,9 @@ LIMIT 100`
           <p>Place of birth: {actors[item].pobLabel.value}</p>
         </div>
       ))}
-      
+
     </div>
   );
 }
- 
+
 export default ActorSearch;
