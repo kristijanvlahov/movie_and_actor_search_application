@@ -55,4 +55,9 @@ button[type=submit] {
   .filter {
     margin-top: 15px;
   }
+  .filtered_results {
+    border-bottom: 1px solid black;
+    width: 500px;
+    margin: auto;
+  }
   

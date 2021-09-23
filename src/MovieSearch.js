@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom';
 const MovieSearch = () => {
 
   const [data, setData] = useState([]);
+  const [filtered_results, setFiltered_results] = useState([]);
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [array, setArray] = useState([]);
   let movie = [];
   let movies = [];
-  let countries_filtered = [];
-  let countries = [];
+  let countries_filtered = []
 
   async function fetchData() {
 
@@ -56,9 +56,9 @@ const MovieSearch = () => {
   }, [])
 
   const handleSearch = (text) => {
-    console.log(data);
+
     movie = data.find(x => x.title.value === text);
-    console.log(movie);
+
     if (typeof (movie) == 'object') {
       movies = [...movies, movie];
       console.log(movies);
@@ -86,22 +86,17 @@ const MovieSearch = () => {
   }
 
   const filterHandler = () => {
+
     var e = document.getElementById("filter");
     var result = e.options[e.selectedIndex].value;
+    countries_filtered = [];
 
     for (let i = 0; i < data.length; i++) {
       if (result === data[i].country.value) {
         countries_filtered.push(data[i]);
       }
     }
-
-    if (typeof (countries_filtered) === 'object') {
-      countries = [...countries, countries_filtered];
-      console.log(countries_filtered);
-      console.log(countries);
-    }
-    countries = [];
-    countries_filtered = [];
+    setFiltered_results(countries_filtered);
   }
 
   return (
@@ -121,7 +116,10 @@ const MovieSearch = () => {
           <option value="China">China</option>
           <option value="United Kingdom">United Kingdom</option>
           <option value="India">India</option>
-          <option value="Australia">Australia</option>
+          <option value="Brazil">Brazil</option>
+          <option value="South Korea">South Korea</option>
+          <option value="Russia">Russia</option>
+          <option value="France">France</option>
         </select>
       </div>
 
@@ -148,10 +146,13 @@ const MovieSearch = () => {
         </div>
       ))}
 
-      {Object.entries(countries).map(([key, val], i) => (
-        <p key={i}>
-          {key}: {val}
-        </p>
+      {filtered_results.map((item, i) => (
+        <div className="filtered_results">
+          <p><b>{item.title.value}</b></p>
+          <p>{item.comment.value}</p>
+          <p>Genre: {item.genreLinkLabel.value}</p>
+          <p>Director: {item.directorLabel.value}</p>
+        </div>
       ))}
 
     </div>
