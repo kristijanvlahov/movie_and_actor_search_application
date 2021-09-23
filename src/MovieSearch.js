@@ -2,9 +2,9 @@ import './App.css';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
- 
+
 const MovieSearch = () => {
- 
+
   const [data, setData] = useState([]);
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -13,13 +13,13 @@ const MovieSearch = () => {
   let movies = [];
   let countries_filtered = [];
   let countries = [];
- 
+
   async function fetchData() {
- 
+
     const SparqlClient = require('sparql-http-client')
- 
+
     const client = new SparqlClient({ endpointUrl: 'https://dbpedia.org/sparql' })
- 
+
     const query = `
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX dct: <http://purl.org/dc/terms/>
@@ -39,22 +39,22 @@ const MovieSearch = () => {
     FILTER(LANG(?comment)='en').
     }
     LIMIT 100`
- 
+
     const stream = await client.query.select(query);
- 
+
     stream.on('data', row => {
       Object.entries(row).forEach(([key, value]) => {
         //console.log(`${key}: ${value.value} (${value.termType})`)
       })
       setData(x => [...x, row]);
       array.push(row.title.value);
- 
+
     })
   }
   useEffect(() => {
     fetchData();
   }, [])
- 
+
   const handleSearch = (text) => {
     console.log(data);
     movie = data.find(x => x.title.value === text);
@@ -64,9 +64,9 @@ const MovieSearch = () => {
       console.log(movies);
     }
   }
- 
+
   const onChangeHandler = (text) => {
- 
+
     let matches = []
     let data2 = [];
     data2 = [...array];
@@ -79,23 +79,23 @@ const MovieSearch = () => {
     setText(text);
     setSuggestions(matches);
   }
- 
+
   const onSuggestHandler = (text) => {
     setText(text);
     setSuggestions([]);
   }
- 
+
   const filterHandler = () => {
     var e = document.getElementById("filter");
     var result = e.options[e.selectedIndex].value;
- 
+
     for (let i = 0; i < data.length; i++) {
       if (result === data[i].country.value) {
         countries_filtered.push(data[i]);
       }
     }
- 
-    if (typeof (countries_filtered) == 'object') {
+
+    if (typeof (countries_filtered) === 'object') {
       countries = [...countries, countries_filtered];
       console.log(countries_filtered);
       console.log(countries);
@@ -103,7 +103,7 @@ const MovieSearch = () => {
     countries = [];
     countries_filtered = [];
   }
- 
+
   return (
     <div className="App">
       <div className="container">
@@ -111,10 +111,10 @@ const MovieSearch = () => {
         <h1>Movie Search</h1>
         <Link to={'/actorSearch'}>Actor Search</Link>
       </div>
- 
+
       <div className="filter">
-        <label>Filter by country:</label>
- 
+        <label>Filter by country: </label>
+
         <select name="country" id="filter" onChange={filterHandler}>
           <option value="/">Choose a country</option>
           <option value="United States">United States</option>
@@ -124,7 +124,7 @@ const MovieSearch = () => {
           <option value="Australia">Australia</option>
         </select>
       </div>
- 
+
       <div className="autocomplete">
         <input type="text" className="input" placeholder="Enter movie name"
           onChange={e => onChangeHandler(e.target.value)}
@@ -132,31 +132,30 @@ const MovieSearch = () => {
         </input>
         <button type="submit" onClick={handleSearch(text)}>Search</button>
       </div>
- 
+
       {suggestions && suggestions.filter((val, i) => i < 5).map((suggestion, i) =>
         <div className="suggestion" onClick={() => onSuggestHandler(suggestion)}>{suggestion}
         </div>
       )}
- 
+
       {Object.keys(movies).map((item, i) => (
-        <div key={i}>
+        <div className="results" key={i}>
           <h3>{movies[item].title.value}</h3>
+          <p className="description">{movies[item].comment.value}</p>
           <p>Genre: {movies[item].genreLinkLabel.value}</p>
           <p>Director: {movies[item].directorLabel.value}</p>
           <p>Country: {movies[item].country.value}</p>
-          <p>Description: {movies[item].comment.value}</p>
         </div>
       ))}
- 
-      {Object.keys(countries_filtered).map((item, i) => (
-          <li key={i}>
-          <span>{countries_filtered[item].title.value}</span>
-          </li>
+
+      {Object.entries(countries).map(([key, val], i) => (
+        <p key={i}>
+          {key}: {val}
+        </p>
       ))}
- 
+
     </div>
   );
 }
- 
+
 export default MovieSearch;
- 

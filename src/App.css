@@ -7,7 +7,7 @@
   padding-top: 20px;
 }
 h1 {
-  margin-bottom: 20px;
+  margin-top: 0px;
 }
 input {
   border: 1px solid transparent;
@@ -48,3 +48,11 @@ button[type=submit] {
   .suggestion:hover{
   background-color: #f1f1f1;
   }
+  .description {
+    width: 300px;
+    margin: auto;
+  }
+  .filter {
+    margin-top: 15px;
+  }
+  
